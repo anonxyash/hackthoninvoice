@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Shop Billing</title>
+  <meta name="description" content="A modern billing application for mobile shops">
+  <meta name="theme-color" content="#6a11cb">
+  
+  <!-- PWA support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="MobileBill">
+  
+  <!-- Fonts and styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Fallback for Safari -->
+  <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+</head>
+<body>
+  <div id="app"></div>
+  
+  <!-- Load scripts -->
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+  
+  <!-- HTML2PDF library for invoice generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  
+  <!-- Offline support notification -->
+  <div id="offline-notification" style="display: none; position: fixed; bottom: 20px; right: 20px; padding: 15px 20px; background-color: #6a11cb; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;">
+    You're now offline. The app will continue to work.
+  </div>
+  
+  <script>
+    // Show offline notification when user goes offline
+    window.addEventListener('offline', () => {
+      document.getElementById('offline-notification').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('offline-notification').style.display = 'none';
+      }, 3000);
+    });
+    
+    // Register service worker for offline support only when running from a proper origin (http/https)
+    if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    } else {
+      console.log('Service worker not registered: Running from file:// origin or service worker not supported');
+    }
+  </script>
+
+  <!-- Invoice template for printing (hidden by default) -->
+  <div id="invoiceTemplate" style="position: absolute; left: -9999px; top: 0;">
+    <div id="invoicePrint" style="width: 210mm; background-color: white; padding: 10mm; box-sizing: border-box;"></div>
+  </div>
+  
+  <!-- Note Edit Modal -->
+  <div id="noteEditModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Item Note</h2>
+        <span class="close-modal" id="closeNoteModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="editNoteText">Note:</label>
+          <textarea id="editNoteText" rows="4" placeholder="Enter note for this item"></textarea>
+        </div>
+        <div class="btn-group">
+          <button id="saveNoteBtn" class="btn btn-primary">Save Note</button>
+          <button id="cancelNoteBtn" class="btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Invoice Settings Modal -->
+  <div id="settingsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Invoice Settings</h2>
+        <span class="close-modal" id="closeSettingsModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="settings-section">
+          <h3>Invoice Paths</h3>
+          <p>Set custom folders for saving your invoices:</p>
+          
+          <div class="input-group">
+            <label for="gstInvoicePath">GST Invoice Save Path:</label>
+            <div class="path-input-container">
+              <input type="text" id="gstInvoicePath" placeholder="C:\Invoices\GST">
+              <button id="browseGstPath" class="btn btn-small">Browse</button>
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label for="nonGstInvoicePath">Non-GST Invoice Save Path:</label>
+            <div class="path-input-container">
+              <input type="text" id="nonGstInvoicePath" placeholder="C:\Invoices\NonGST">
+              <button id="browseNonGstPath" class="btn btn-small">Browse</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="settings-actions">
+          <button id="saveSettingsBtn" class="btn btn-success">Save Settings</button>
+          <button id="cancelSettingsBtn" class="btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 
