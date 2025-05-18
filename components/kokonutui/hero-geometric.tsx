@@ -246,19 +246,19 @@ export default function HeroGeometric({
       </div>
       
       {/* Billing App Section */}
-      <div ref={billingRef} className="w-full flex items-center justify-center p-6 md:p-12 relative" style={{ minHeight: "290vh" }}>
+      <div ref={billingRef} className="w-full flex items-center justify-center p-6 md:p-12 relative" style={{ minHeight: "310vh" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-rose-500/[0.05] blur-3xl" />
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
           className="w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden h-auto relative z-10"
         >
-          <div className="w-full" style={{ height: "270vh" }}>
-            <iframe 
-              src="/mobile-billing-app/index.html" 
+          <div className="w-full" style={{ height: "300vh" }}>
+            <iframe
+              src="/mobile-billing-app/index.html"
               className="w-full h-full border-0"
               title="Billing Software"
               scrolling="no"
