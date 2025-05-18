@@ -2,6 +2,6 @@
 
 import HeroGeometric from "../components/kokonutui/hero-geometric"
 
-export default function SyntheticV0PageForDeployment() {
+export default function InvoiceGeniusHomePage() {
   return <HeroGeometric />
 }
